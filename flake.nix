@@ -16,7 +16,7 @@
         gpuType = "intel"; # amd, intel or nvidia
       };
       # ---- USER SETTINGS ---- #
-      userSettings = {
+      userSettings = rec {
         username = "rob";
         name = "Rob";
         email = "dispatchcode3@gmail.com";
@@ -29,7 +29,7 @@
         wmType = if ((wm == "hyprland") || (wm == "plasma")) then "wayland" else "x11";
       };
 
-        pkgs = import nixpkgs {
+        pkgs = import inputs.nixpkgs {
           system = systemSettings.system;
           config.allowUnfree = true;
         };
@@ -48,7 +48,7 @@
         };
       };
 
-      homeConfigurations.user = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.user = inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [ 
           (./. + "/profiles/${systemSettings.profile}/home.nix")
@@ -67,6 +67,5 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
-  };
   };
 }
