@@ -1,21 +1,26 @@
-{ config, pkgs, inputs, userSettings, systemSettings, ... }:
+{ config, pkgs, lib, inputs, userSettings, systemSettings, ... }:
 
 {
   imports = [
     ../../system/hardware-configuration.nix
-    ../../system/boot.nix
+    ../../system/bluetooth.nix
+    ../../system/bootloader.nix
+    ../../system/desktop.nix
+    ../../system/locale.nix
     ../../system/networking.nix
+    ../../system/shell.nix
+    ../../system/time.nix
     ../../system/users.nix
   ];
 
-  nixpkgs.hostPlatform = systemSettings.system;
+  system.stateVersion = "24.11";
 
-  time.timeZone = systemSettings.timeZone;
-  i18n.defaultLocale = systemSettings.locale;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  environment.systemPackages = with pkgs; systemSettings.extraPackages;
-
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.displayManager.defaultSession = "hyprland";
+  environment.systemPackages = with pkgs; [
+    home-manager
+    vim
+    git
+    wget
+  ];
 }

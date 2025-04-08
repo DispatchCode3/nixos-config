@@ -1,14 +1,22 @@
-{ config, pkgs, inputs, userSettings, systemSettings, lib, ... }:
+{ config, pkgs, lib, inputs, userSettings, systemSettings, ... }:
 
 {
   imports = [
-    ../../user/terminal.nix
-    ../../user/misc.nix
-    ../../user/development.nix
-    (import lib.wmModulePath)
+    (import ../../user/app/browser/${userSettings.browser}.nix)
+    (import ../../user/app/editor/${userSettings.editor}/${userSettings.editor}.nix)
+    (import ../../user/app/terminal/${userSettings.term}.nix)
+    # (import ../../user/wm/${userSettings.wm}/${userSettings.wm}.nix)
+    ../../user/git/git.nix
   ];
+  
+  home.stateVersion = "24.11";
+
+  programs.home-manager.enable = true;
 
   home.username = userSettings.username;
-  home.homeDirectory = lib.homeDirectory;
-  home.stateVersion = "23.11";
+  home.homeDirectory = "home/${userSettings.username}";
+  
+  home.packages = with pkgs; [
+
+  ];
 }
