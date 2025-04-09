@@ -26,10 +26,11 @@
     };
   };
 
+  home.packages = (with pkgs; [
+    waybar
+    hyprpaper
+    hyprlock
+  ]);
   # Manage Hyprland config declaratively
   xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
-
-  programs.hyprlock.enable = true;
-  programs.waybar.enable = true;
-  programs.hyprpaper.enable = true;
 }
