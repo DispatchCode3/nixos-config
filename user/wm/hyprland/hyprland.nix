@@ -1,16 +1,15 @@
-{ pkgs, inputs, userSettings, ... }:
+{ pkgs, lib, config, ... }:
 
-let
-  hyprlandPkg = inputs.hyprland.packages.${pkgs.system}.default;
-in {
+{
   wayland.windowManager.hyprland = {
     enable = true;
-    package = hyprlandPkg;
+    package = pkgs.hyprland;
 
     settings = {
       exec-once = [
         "waybar &"
         "hyprpaper &"
+        "hyprlock &"
       ];
 
       input = {
@@ -27,6 +26,10 @@ in {
     };
   };
 
-  # Optional: portable config
+  # Manage Hyprland config declaratively
   xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
+
+  programs.hyprlock.enable = true;
+  programs.waybar.enable = true;
+  programs.hyprpaper.enable = true;
 }

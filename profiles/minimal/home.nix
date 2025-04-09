@@ -5,7 +5,7 @@
     (import ../../user/app/browser/${userSettings.browser}.nix)
     (import ../../user/app/editor/${userSettings.editor}/${userSettings.editor}.nix)
     (import ../../user/app/terminal/${userSettings.term}.nix)
-    # (import ../../user/wm/${userSettings.wm}/${userSettings.wm}.nix)
+    (import ../../user/wm/${userSettings.wm}/${userSettings.wm}.nix)
     ../../user/app/git/git.nix
   ];
   

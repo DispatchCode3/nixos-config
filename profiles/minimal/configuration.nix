@@ -5,7 +5,7 @@
     ../../system/hardware-configuration.nix
     ../../system/bluetooth.nix
     ../../system/bootloader.nix
-   # ../../system/desktop.nix
+    ../../system/desktop.nix
     ../../system/locale.nix
     ../../system/networking.nix
     ../../system/shell.nix
