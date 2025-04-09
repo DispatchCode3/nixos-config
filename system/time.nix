@@ -1,6 +1,6 @@
-{ config, pkgs, userSettings, ... }:
+{ config, pkgs, systemSettings, ... }:
 
 {
-  time.timeZone = systemSettings.timeZone;
+  time.timeZone = systemSettings.timezone;
   services.timesyncd.enable = true;
 }
