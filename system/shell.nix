@@ -16,19 +16,19 @@
       ll = "ls -l";
 
       # Rebuild NixOS system
-      sys="nixos-rebuild switch --use-remote-sudo --flake .#system";
+      sys = "nixos-rebuild switch --use-remote-sudo --flake .#system";
 
       # Rebuild Home Manager user config
-      hm="home-manager switch --flake .#user";
+      hm = "home-manager switch --flake .#user";
 
       # Update flake inputs (e.g., nixpkgs/home-manager)
-      flake-update="nix flake update && echo '✅ flake.lock updated!'";
+      flake-update = "nix flake update && echo '✅ flake.lock updated!'";
 
       # Rebuild everything (system and user)
-      rebuild-all="sys && hm";
+      rebuild-all = "sys && hm";
 
       # Generate hardware-configuration and move it
-      generate-hardware="nixos-generate-config --show-hardware-config > ~/.dotfiles/system/hardware-configuration.nix";
+      generate-hardware = "nixos-generate-config --show-hardware-config > ~/.dotfiles/system/hardware-configuration.nix";
     };
   };
 }
