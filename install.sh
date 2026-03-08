@@ -28,10 +28,11 @@ umount -R /mnt 2>/dev/null || true
 sgdisk --zap-all "$DISK"
 wipefs -a "$DISK"
 
-sgdisk -n 1:0:+1G -t 1:ef00 -c 1:boot \
-       -n 2:0:+4G -t 2:8200 -c 2:swap \
-       -n 3:0:0   -t 3:8300 -c 3:root \
-       "$DISK"
+sgdisk \
+  -n 1:0:+1G -t 1:ef00 -c 1:boot \
+  -n 2:0:+4G -t 2:8200 -c 2:swap \
+  -n 3:0:0   -t 3:8300 -c 3:root \
+  "$DISK"
 
 partprobe "$DISK"
 udevadm settle
@@ -60,9 +61,17 @@ cp /mnt/etc/nixos/hardware-configuration.nix /tmp/hardware-configuration.nix
 
 rm -rf /mnt/etc/nixos
 git clone https://github.com/DispatchCode3/nixos-config /mnt/etc/nixos
-cp /tmp/hardware-configuration.nix /mnt/etc/nixos/
 
+cp /tmp/hardware-configuration.nix /mnt/etc/nixos/
 cd /mnt/etc/nixos
+
 git add hardware-configuration.nix
 
 nixos-install --flake /mnt/etc/nixos#nixos
+
+echo
+echo "Installation complete."
+echo "Set the rob password before rebooting with:"
+echo "nixos-enter --root /mnt -c 'passwd rob'"
+echo
+echo "Then reboot."
