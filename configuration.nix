@@ -14,12 +14,10 @@
   users.users.rob = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
-    initialPassword = "changeme";
   };
 
   services.xserver.enable = true;
   services.xserver.windowManager.qtile.enable = true;
-
   services.displayManager.ly.enable = true;
 
   environment.systemPackages = with pkgs; [
