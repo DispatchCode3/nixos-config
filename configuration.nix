@@ -26,9 +26,8 @@
     vim
     wget
     git
+    alacritty
   ];
-
-  programs.alacritty.enable = true;
 
   system.stateVersion = "25.11";
 }
