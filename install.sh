@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export NIX_CONFIG="experimental-features = nix-command flakes"
+
 DISK="${1:-}"
 REPO_URL="https://github.com/DispatchCode3/nixos-config"
 
