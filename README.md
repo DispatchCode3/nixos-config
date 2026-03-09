@@ -18,6 +18,7 @@ Boot the **NixOS installer ISO**, then run:
 
 ```bash
 sudo -i
+export NIX_CONFIG="experimental-features = nix-command flakes"
 git clone https://github.com/DispatchCode3/nixos-config
 cd nixos-config
 chmod +x install.sh
@@ -39,7 +40,7 @@ nixos-enter --root /mnt -c 'passwd <user>'
 reboot
 ```
 
-The username comes from `settings.nix`.
+The username comes from `hosts/nixos/settings.nix`.
 
 ---
 
@@ -47,7 +48,7 @@ The username comes from `settings.nix`.
 
 A normal install should only require editing:
 
-## `settings.nix`
+## `hosts/nixos/settings.nix`
 
 System-wide install configuration.
 
@@ -55,7 +56,6 @@ Examples:
 
 - `hostName`
 - `userName`
-- `nixosRelease`
 - boot mode
 - timezone
 - locale
@@ -92,11 +92,12 @@ Examples:
 ```
 flake.nix
 install.sh
-settings.nix
+README.md
 
 hosts/
   nixos/
     default.nix
+    settings.nix
     hardware-configuration.nix
 
 modules/system/
@@ -125,16 +126,16 @@ The system is built in layers.
 
 ## Settings
 
-`settings.nix`
+`hosts/nixos/settings.nix`
 
 Defines:
 
 - host name
 - username
 - boot mode
-- NixOS release
 - locale
 - timezone
+- system state versions
 
 ---
 
@@ -209,24 +210,14 @@ users/rob/dotfiles/vim/extra.vim
 To upgrade the system:
 
 ```bash
-nixos-rebuild switch --flake .
+sudo nixos-rebuild switch --flake .#nixos
 ```
 
-To upgrade to a newer NixOS release:
-
-Edit:
+If you later move to a newer NixOS release, update the flake input pins in:
 
 ```
-settings.nix
+flake.nix
 ```
-
-Change:
-
-```
-nixosRelease = "25.11";
-```
-
-Then rebuild.
 
 Do **not** change:
 
