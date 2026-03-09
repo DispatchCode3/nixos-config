@@ -62,16 +62,17 @@ cp /mnt/etc/nixos/hardware-configuration.nix /tmp/hardware-configuration.nix
 rm -rf /mnt/etc/nixos
 git clone https://github.com/DispatchCode3/nixos-config /mnt/etc/nixos
 
-cp /tmp/hardware-configuration.nix /mnt/etc/nixos/
+mkdir -p /mnt/etc/nixos/hosts/nixos
+cp /tmp/hardware-configuration.nix /mnt/etc/nixos/hosts/nixos/hardware-configuration.nix
+
 cd /mnt/etc/nixos
+git add hosts/nixos/hardware-configuration.nix
 
-git add hardware-configuration.nix
-
-nixos-install --flake /mnt/etc/nixos#nixos
+nixos-install --flake /mnt/etc/nixos#${HOSTNAME:-nixos}
 
 echo
 echo "Installation complete."
-echo "Set the rob password before rebooting with:"
-echo "nixos-enter --root /mnt -c 'passwd rob'"
+echo "Set the user password before rebooting:"
+echo "nixos-enter --root /mnt -c 'passwd $(nix eval --impure --expr \"(import /mnt/etc/nixos/settings.nix).userName\" --raw)'"
 echo
 echo "Then reboot."
