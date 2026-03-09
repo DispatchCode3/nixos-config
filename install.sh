@@ -5,6 +5,7 @@ export NIX_CONFIG="experimental-features = nix-command flakes"
 
 DISK="${1:-}"
 REPO_URL="https://github.com/DispatchCode3/nixos-config"
+HOST_DIR="hosts/nixos"
 
 if [[ -z "$DISK" ]]; then
   echo "Usage: $0 /dev/sdX"
@@ -16,31 +17,28 @@ if [[ ! -b "$DISK" ]]; then
   exit 1
 fi
 
-if ! command -v nix >/dev/null 2>&1; then
-  echo "Error: nix is not available in this environment"
-  exit 1
-fi
-
 TMP_REPO="$(mktemp -d)"
 cleanup() {
   rm -rf "$TMP_REPO"
 }
 trap cleanup EXIT
 
-echo "Cloning repository to read settings..."
+echo "Cloning repository to read host settings..."
 git clone "$REPO_URL" "$TMP_REPO"
 
-if [[ ! -f "$TMP_REPO/settings.nix" ]]; then
-  echo "Error: settings.nix not found in repository"
+SETTINGS_FILE="$TMP_REPO/$HOST_DIR/settings.nix"
+
+if [[ ! -f "$SETTINGS_FILE" ]]; then
+  echo "Error: $HOST_DIR/settings.nix not found in repository"
   exit 1
 fi
 
-HOST_NAME="$(nix eval --impure --expr "(import $TMP_REPO/settings.nix).hostName" --raw)"
-USER_NAME="$(nix eval --impure --expr "(import $TMP_REPO/settings.nix).userName" --raw)"
-BOOT_MODE="$(nix eval --impure --expr "(import $TMP_REPO/settings.nix).boot.mode" --raw)"
+HOST_NAME="$(nix eval --impure --expr "(import $SETTINGS_FILE).hostName" --raw)"
+USER_NAME="$(nix eval --impure --expr "(import $SETTINGS_FILE).userName" --raw)"
+BOOT_MODE="$(nix eval --impure --expr "(import $SETTINGS_FILE).boot.mode" --raw)"
 
 if [[ -z "$HOST_NAME" || -z "$USER_NAME" || -z "$BOOT_MODE" ]]; then
-  echo "Error: failed to read hostName, userName, or boot.mode from settings.nix"
+  echo "Error: failed to read hostName, userName, or boot.mode from $HOST_DIR/settings.nix"
   exit 1
 fi
 
@@ -76,7 +74,7 @@ elif [[ "$BOOT_MODE" == "bios" ]]; then
     -n 2:0:0   -t 2:8300 -c 2:root \
     "$DISK"
 else
-  echo "Error: unsupported boot.mode '$BOOT_MODE' in settings.nix"
+  echo "Error: unsupported boot.mode '$BOOT_MODE' in $HOST_DIR/settings.nix"
   exit 1
 fi
 
@@ -119,11 +117,11 @@ cp /mnt/etc/nixos/hardware-configuration.nix /tmp/hardware-configuration.nix
 rm -rf /mnt/etc/nixos
 git clone "$REPO_URL" /mnt/etc/nixos
 
-mkdir -p "/mnt/etc/nixos/hosts/$HOST_NAME"
-cp /tmp/hardware-configuration.nix "/mnt/etc/nixos/hosts/$HOST_NAME/hardware-configuration.nix"
+mkdir -p "/mnt/etc/nixos/$HOST_DIR"
+cp /tmp/hardware-configuration.nix "/mnt/etc/nixos/$HOST_DIR/hardware-configuration.nix"
 
 cd /mnt/etc/nixos
-git add "hosts/$HOST_NAME/hardware-configuration.nix"
+git add "$HOST_DIR/hardware-configuration.nix"
 
 nixos-install --flake "/mnt/etc/nixos#$HOST_NAME"
 
