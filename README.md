@@ -18,7 +18,6 @@ Boot the **NixOS installer ISO**, then run:
 
 ```bash
 sudo -i
-export NIX_CONFIG="experimental-features = nix-command flakes"
 git clone https://github.com/DispatchCode3/nixos-config
 cd nixos-config
 chmod +x install.sh
